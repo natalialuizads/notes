@@ -14,7 +14,7 @@ const config: Config = {
     mermaid: true,
   },
   themes: ['@docusaurus/theme-mermaid'],
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://natalialuizads.github.io',
   baseUrl: '/notes',
   organizationName: 'natalialuizads',
   projectName: 'notes',
