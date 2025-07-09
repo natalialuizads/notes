@@ -21,10 +21,6 @@ const config: Config = {
   projectName: 'docusaurus',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
-  },
   presets: [
     [
       'classic',

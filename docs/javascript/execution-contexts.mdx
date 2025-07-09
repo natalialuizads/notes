@@ -9,7 +9,7 @@ Os contextos de execução são gerenciados em uma **pilha** (a "pilha de execu�
 Um **Registro de Ambiente** é uma estrutura de dados interna usada pelo motor JavaScript para gerenciar o mapeamento entre identificadores (como nomes de variáveis, nomes de funções, etc.) e seus valores durante a execução do código.
 Pontos-chave sobre os Registros de Ambiente:
 - Eles rastreiam quais nomes (identificadores) estão disponíveis em cada escopo e a que se referem.
-- Cada bloco de código `{ ... }` tem seu próprio Registro de Ambiente que gerencia as declarações dentro dele.
+- Cada bloco de código `` `{ ... }` `` tem seu próprio Registro de Ambiente que gerencia as declarações dentro dele.
 ### Hierarquia dos Registros de Ambiente (Modelo Orientado a Objetos)
 Na especificação ECMAScript, os Registros de Ambiente são modelados como uma hierarquia de classes:
 - **Environment Record** (classe base abstrata)
