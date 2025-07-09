@@ -3,13 +3,17 @@ sidebar_position: 1
 ---
 
 # Contexto de Execução
-O **contexto de execução** é um conceito fundamental em JavaScript que ajuda a gerenciar a execução do código. Toda vez que você executa um código JavaScript (seja global, uma função, um módulo ou uma chamada `eval`), um novo contexto de execução é criado. Esse contexto rastreia o ambiente, as variáveis e o fluxo do código.
-Os contextos de execução são gerenciados em uma **pilha** (a "pilha de execução" ou "call stack") que segue o princípio **LIFO (Last In, First Out - Último a Entrar, Primeiro a Sair)**. O contexto no topo da pilha é o que está sendo executado no momento. Quando termina, ele é removido da pilha, e o contexto anterior retoma a execução.
+O **contexto de execução** é um conceito fundamental em JavaScript, pois ajuda a gerenciar a execução do código. Sempre que um código JavaScript é executado (seja global, uma função, um módulo ou uma chamada de `eval`), um novo contexto de execução é criado. Esse contexto rastreia o ambiente, as variáveis e o fluxo do código.
+
+
+Os contextos de execução são gerenciados em uma pilha (a "pilha de execução" ou "call stack"), que segue o princípio **LIFO** (Last In, First Out, ou "último a entrar, primeiro a sair"). O contexto no topo da pilha é o que está sendo executado no momento. Ao terminar, ele é removido da pilha e o contexto anterior retoma a execução.
+
 ## Registros de Ambiente (Environment Records)
-Um **Registro de Ambiente** é uma estrutura de dados interna usada pelo motor JavaScript para gerenciar o mapeamento entre identificadores (como nomes de variáveis, nomes de funções, etc.) e seus valores durante a execução do código.
-Pontos-chave sobre os Registros de Ambiente:
-- Eles rastreiam quais nomes (identificadores) estão disponíveis em cada escopo e a que se referem.
-- Cada bloco de código `` `{ ... }` `` tem seu próprio Registro de Ambiente que gerencia as declarações dentro dele.
+Um Registro de Ambiente é uma estrutura de dados interna utilizada pelo motor JavaScript para gerenciar o mapeamento entre identificadores (como nomes de variáveis e funções) e seus respectivos valores durante a execução do código.
+Pontos-chave sobre os registros de ambiente:
+- eles rastreiam quais nomes (identificadores) estão disponíveis em cada escopo e a que se referem;
+- Cada bloco de código `` `{...}` `` tem seu próprio registro de ambiente, que gerencia as declarações dentro dele.
+
 ### Hierarquia dos Registros de Ambiente (Modelo Orientado a Objetos)
 Na especificação ECMAScript, os Registros de Ambiente são modelados como uma hierarquia de classes:
 - **Environment Record** (classe base abstrata)
@@ -18,27 +22,35 @@ Na especificação ECMAScript, os Registros de Ambiente são modelados como uma 
     - **Module Environment Record** (para módulos)
   - **Object Environment Record** (usado para declarações globais `var` e de funções, e com a declaração `with`)
   - **Global Environment Record** (um registro composto para o escopo global)
+
 ## OuterEnv (A Referência ao Ambiente Externo)
 Todo Registro de Ambiente tem um campo **`OuterEnv`**. Esse campo contém uma referência ao **ambiente pai (externo)**, formando uma cadeia de ambientes conhecida como **cadeia de escopos (scope chain)**.
+
 ### Como a Cadeia de Escopos Funciona
 Quando o JavaScript precisa resolver um identificador (como um nome de variável), ele:
 1. Procura no Registro de Ambiente atual.
 2. Se não encontrado, segue a referência `OuterEnv` para o ambiente pai e verifica lá.
 3. Isso continua até que o identificador seja encontrado ou até que o escopo global (onde `OuterEnv` é `null`) seja alcançado. Se o identificador não for encontrado no escopo global, ocorre um `ReferenceError`.
+
 ## Componentes do Contexto de Execução Global
 O contexto de execução global tem vários componentes-chave:
+
 ### Estado de Avaliação de Código (Code Evaluation State)
+
 Refere-se ao conjunto de informações que o motor JavaScript (como o V8) mantém para gerenciar o fluxo de avaliação do código. É crucial para:
 - **Operações assíncronas**: Gerenciar `await` sem perder o contexto.
 - **Depuração**: Pausar e retomar a execução em breakpoints.
 - **Iteração**: Controlar geradores (usando `yield` e `next`).
+
 ### Realm (Domínio)
 Um **Realm** é um ambiente isolado onde o código JavaScript é executado. Por exemplo, cada aba do navegador tem seu próprio Realm para evitar interferência entre abas. Antes da execução, todo pedaço de código JavaScript deve ser associado a um Realm. Conceitualmente, um Realm inclui:
 - Um conjunto de **objetos intrínsecos** (objetos embutidos padrão).
 - Um **objeto global**.
 - Um **registro de ambiente global**.
+
 #### Objetos Intrínsecos (Intrinsic Objects)
 São objetos e funções embutidos padrão essenciais para a execução do código, como `Array`, `Function`, `Date`, `Math` e `SyntaxError`.
+
 #### O Objeto Global (Global Object)
 O objeto global é uma parte fundamental do Realm. Em diferentes ambientes:
 - Nos navegadores: `window` (ou `self`, `frames`, `globalThis`).
@@ -63,6 +75,7 @@ O objeto global tem três tipos de propriedades:
      function cumprimentar() {} // Torna-se window.cumprimentar no navegador
      ```
 #### Registro de Ambiente Global (Global Environment Record)
+
 O Registro de Ambiente Global gerencia as vinculações (associações entre nomes e valores) para todas as declarações no escopo global. É um registro composto feito de duas partes:
 1. **Registro de Ambiente Declarativo (Declarative Environment Record)**:
    - Gerencia declarações de `let`, `const`, `class` e módulos no escopo global.
@@ -76,8 +89,10 @@ O Registro de Ambiente Global gerencia as vinculações (associações entre nom
      - Propriedades globais embutidas (como `Array`, `Math`).
    - Também tem um campo `OuterEnv` (definido como `null` para o escopo global).
    - Importante: O Registro de Ambiente de Objeto existe **apenas** no contexto global. Em outros contextos (como funções, blocos, módulos), apenas o Registro de Ambiente Declarativo é usado porque eles não interagem diretamente com o objeto global.
+
 ## Ambiente Léxico vs. Ambiente de Variáveis (Lexical Environment vs. Variable Environment)
 Todo contexto de execução tem dois componentes relacionados ao ambiente:
+
 ### Ambiente Léxico (Lexical Environment)
 - **O que aponta**: O Registro de Ambiente para o contexto atual.
   - No contexto global: Aponta para o Registro de Ambiente Global.
@@ -86,6 +101,7 @@ Todo contexto de execução tem dois componentes relacionados ao ambiente:
   - Vinculações de `let` e `const`.
   - Vinculações de classes e módulos.
 - **Comportamento**: Durante a fase de criação de um contexto de execução, variáveis declaradas com `let` e `const` estão na Zona Temporalmente Morta (Temporal Dead Zone - TDZ) — elas existem, mas não podem ser acessadas até serem inicializadas.
+
 ### Ambiente de Variáveis (Variable Environment)
 - **O que aponta**: Inicialmente o mesmo que o Ambiente Léxico.
 - **O que armazena**:
