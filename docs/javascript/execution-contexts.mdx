@@ -5,8 +5,8 @@ sidebar_position: 1
 # Contexto de Execução 
 
 ## Definição e Funcionamento
-Um **contexto de execução** é uma estrutura abstrata criada pelo motor JavaScript para gerenciar a execução de código. Sempre que qualquer código é executado em um destes ambientes:
 
+Um **contexto de execução** é uma estrutura abstrata criada pelo motor JavaScript para gerenciar a execução de código. Sempre que qualquer código é executado em um destes ambientes:
 - **Global** (script principal)
 - **Função** (invocação de função)
 - **Módulo** (código modular ES6+)
@@ -18,17 +18,75 @@ um novo contexto é criado. Este contexto é responsável por:
 2. Gerenciar variáveis e declarações
 3. Controlar o fluxo de execução do código
 
+
 Os contextos são organizados em uma **pilha de execução (call stack)** seguindo o princípio **LIFO** (Last In, First Out - Último a Entrar, Primeiro a Sair). O contexto no topo da pilha é sempre o ativamente em execução. Quando sua execução termina, ele é removido da pilha e o controle retorna ao contexto anterior.
+
+Cada contexto de execução passa por **duas fases distintas**:
+1. **Fase de Criação (Creation Phase)**  
+
+   Ocorre **antes** da execução do código:
+   - **Ambiente Léxico (LexicalEnvironment)** é criado:
+     - `EnvironmentRecord`: Registra variáveis, funções e parâmetros (hoisting)
+     - `outer`: Referência ao escopo externo (cadeia de escopos)
+   - **Ambiente de Variáveis (VariableEnvironment)** é inicializado (em contextos não-modernos, é separado, mas no ES6+ é equivalente ao LexicalEnvironment para `var`):
+     - Declarações `var` são registradas como `undefined`
+     - Declarações `function` são completamente inicializadas
+   - **`this`** é vinculado ao contexto
+   - **Escopos de bloco** (`let`/`const`) são criados (mas não inicializados, entrando em TDZ - Temporal Dead Zone)
+
+2. **Fase de Execução (Execution Phase)**  
+
+   O código é processado linha a linha:
+
+   - Atribuições de valores a variáveis
+   - Execução de expressões e chamadas de função
+   - Resolução de referências a variáveis
+   - Inicialização de `let`/`const` (fim da TDZ - Temporal Dead Zone)
 
 ```mermaid
 flowchart TB
-    Novo[Novo Contexto Criado] --> Empilha[Empilhado na Call Stack]
-    Empilha --> Executa[Execução Iniciada]
-    Executa --> Finaliza{Execução Concluída?}
-    Finaliza -->|Não| Executa
+    Novo[Novo Contexto Criado] --> FaseCriacao[Fase de Criação]
+    FaseCriacao --> |Hoisting| LexEnv[LexicalEnvironment]
+    FaseCriacao --> |Binding| This[Definição de 'this']
+    FaseCriacao --> FaseExec[Fase de Execução]
+    FaseExec --> |Processamento| Vars[Atribuição de Variáveis]
+    FaseExec --> |Processamento| Code[Execução do Código]
+    FaseExec --> Finaliza{Execução Concluída?}
+    Finaliza -->|Não| FaseExec
     Finaliza -->|Sim| Desempilha[Desempilhado da Pilha]
-    Desempilha --> Retorna[Controle Retorna ao Contexto Anterior]
 ```
+#### Exemplo Prático: Entendendo as Fases
+
+```javascript
+console.log(a); // undefined (hoisting)
+var a = 10;
+function foo(b) {
+  console.log(c); // ReferenceError (TDZ)
+  let c = 20;
+  console.log(b);
+}
+foo(a);
+```
+Passo a passo:
+1. **Contexto Global - Fase de Criação**:
+   - `a` (var) é registrada no ambiente léxico como `undefined`.
+   - `foo` é registrada como uma função (hoisting total).
+   - `this` é vinculado ao objeto global (no navegador, `window`).
+2. **Contexto Global - Fase de Execução**:
+   - `console.log(a)`: imprime `undefined` (valor de `a` na fase de criação).
+   - `a = 10`: atribui o valor 10 à variável `a`.
+   - `foo(a)`: invoca a função `foo` com o argumento 10 (valor de `a`). 
+   - **Cria um novo contexto de execução para `foo`**.
+3. **Contexto de `foo` - Fase de Criação**:
+   - Parâmetro `b` é registrado com o valor passado (10).
+   - `c` (declarada com `let`) é registrada, mas **não inicializada** (entra em TDZ).
+4. **Contexto de `foo` - Fase de Execução**:
+   - `console.log(c)`: tenta acessar `c` que está em TDZ → lança `ReferenceError`.
+   - A execução é interrompida. Se não houvesse erro, as próximas linhas seriam:
+     - `c = 20`: inicializa `c` (fim da TDZ).
+     - `console.log(b)`: imprime 10.
+> **TDZ (Temporal Dead Zone)**: Período entre a criação do escopo (fase de criação) e a inicialização da variável (fase de execução) onde o acesso a `let`/`const` gera `ReferenceError`.
+
 ---
 ## Registros de Ambiente
 
