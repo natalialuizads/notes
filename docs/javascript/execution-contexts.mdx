@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Contexto de Execução 
 
-## Definição e Funcionamento
+## Definição e funcionamento
 
 Um **contexto de execução** é uma estrutura abstrata criada pelo motor JavaScript para gerenciar a execução de código. Sempre que qualquer código é executado em um destes ambientes:
 - **Global** (script principal)
@@ -34,7 +34,7 @@ Cada contexto de execução passa por **duas fases distintas**:
    - **`this`** é vinculado ao contexto
    - **Escopos de bloco** (`let`/`const`) são criados (mas não inicializados, entrando em TDZ - Temporal Dead Zone)
 
-2. **Fase de Execução (Execution Phase)**  
+2. **Fase de execução (execution phase)**  
 
    O código é processado linha a linha:
 
@@ -55,7 +55,7 @@ flowchart TB
     Finaliza -->|Não| FaseExec
     Finaliza -->|Sim| Desempilha[Desempilhado da Pilha]
 ```
-#### Exemplo Prático: Entendendo as Fases
+#### Exemplo prático: Entendendo as fases
 
 ```javascript
 console.log(a); // undefined (hoisting)
@@ -88,9 +88,9 @@ Passo a passo:
 > **TDZ (Temporal Dead Zone)**: Período entre a criação do escopo (fase de criação) e a inicialização da variável (fase de execução) onde o acesso a `let`/`const` gera `ReferenceError`.
 
 ---
-## Registros de Ambiente
+## Registros de ambiente
 
-### Environment Records: O Sistema de Mapeamento
+### Environment Records: O sistema de mapeamento
 
 Os **Environment Records** são estruturas internas definidas pela especificação ECMAScript que:
 
@@ -118,7 +118,7 @@ graph TD
     style OER fill:#E91E63,stroke:#C2185B
 ```
 
-### Global Environment Record: O Gerenciador Híbrido
+### Global Environment Record: O gerenciador híbrido
 
 O **Global Environment Record** gerencia o escopo global usando dois componentes distintos:
 
@@ -130,7 +130,7 @@ graph TD
     OER -->|Gerencia| VAR["var, function"]
 ```
 
-### Declarative Environment Record (Componente Global)
+### Declarative Environment Record (componente global)
 Gerencia declarações modernas no escopo global:
 
 **Características**:
@@ -148,7 +148,7 @@ console.log(globalThis.globalLet); // undefined
 console.log(globalThis.MinhaClasse); // undefined
 ```
 
-### FunctionEnvironmentRecord: Ambiente para Funções
+### FunctionEnvironmentRecord: Ambiente para funções
 
 O **FunctionEnvironmentRecord** é uma especialização do DeclarativeEnvironmentRecord que adiciona capacidades para funções:
 
@@ -160,7 +160,7 @@ graph TD
     FER -->|Adiciona| SUPER[Acesso a super]
 ```
 
-#### Funcionalidades Essenciais
+#### Funcionalidades essenciais
 1. **Vinculação de `this`**:
    ```javascript
    function normalFunc() {
@@ -193,7 +193,7 @@ graph TD
    }
    ```
 
-#### Exemplo Completo
+#### Exemplo completo
 ```javascript
 function criarContador(inicial) {
     // Variáveis gerenciadas pelo FunctionEnvironmentRecord
@@ -210,7 +210,7 @@ function criarContador(inicial) {
 }
 ```
 
-### ModuleEnvironmentRecord: Ambiente para Módulos ES6
+### ModuleEnvironmentRecord: Ambiente para módulos ES6
 
 O **ModuleEnvironmentRecord** estende o DeclarativeEnvironmentRecord com:
 
@@ -221,7 +221,7 @@ graph TD
     MER -->|Adiciona| EXP[Exportações]
 ```
 
-#### Funcionalidades Principais
+#### Funcionalidades principais
 1. **Importações imutáveis**:
    ```javascript
    import { API_KEY } from './config.js';
@@ -249,7 +249,7 @@ graph TD
    }
    ```
 
-#### Exemplo Completo
+#### Exemplo completo
 ```javascript
 // math.js (módulo)
 export const PI = 3.14159;
@@ -264,7 +264,7 @@ import { PI, soma } from './math.js';
 console.log(soma(PI, 10)); // 13.14159
 ```
 
-### Object Environment Record (Componente Global)
+### Object Environment Record (componente global)
 Gerencia declarações tradicionais no escopo global:
 
 **Características**:
@@ -281,7 +281,7 @@ console.log(globalThis.globalVar); // "valor"
 console.log(globalThis.globalFunc); // function
 ```
  
-### Tabela Comparativa: Tipos de Registros
+### Tabela comparativa: Tipos de registros
 
 | Registro                     | Propósito Principal            | Exemplo de Uso                 | Característica Única               |
 |------------------------------|--------------------------------|--------------------------------|------------------------------------|
@@ -293,9 +293,9 @@ console.log(globalThis.globalFunc); // function
 
 ---
 
-## OuterEnv: O Coração das Closures
+## OuterEnv: O Coração das closures
 
-### Mecanismo Fundamental
+### Mecanismo fundamental
 Todo registro de ambiente possui um campo **`OuterEnv`** que referencia seu ambiente pai, formando a **cadeia de escopos** (scope chain). 
 
 **Processo de resolução de identificadores**:
@@ -322,7 +322,7 @@ closure(); // Mantém acesso ao OuterEnv mesmo após execução
 
 ## Componentes do Contexto Global
 
-### Estado de Avaliação de Código
+### Estado de avaliação de código
 Mecanismo que mantém o estado de execução para recursos complexos:
 
 | Recurso                | Funcionalidade                  | Exemplo Prático               |
@@ -332,9 +332,9 @@ Mecanismo que mantém o estado de execução para recursos complexos:
 | **Depuração**          | Gerenciamento de breakpoints    | Pausa no DevTools            |
 | **Tratamento de Erros**| Rastreamento da pilha de chamadas| `new Error().stack`          |
 
-### Realm: Domínio de Execução Isolado
+### Realm: Domínio de execução isolado
 
-#### Conceito Fundamental
+#### Conceito fundamental
 Um **Realm** é um ambiente de execução completamente isolado que funciona como um "container" independente para código JavaScript. Este mecanismo garante:
 
 1. **Isolamento total**: Código em diferentes Realms não interfere entre si
@@ -351,10 +351,10 @@ window.appData = { usuario: "João" };
 console.log(window.appData); // undefined - Realms diferentes!
 ```
 
-#### Componentes Essenciais
+#### Componentes essenciais
 Cada Realm possui três elementos fundamentais:
 
-#### Objetos Intrínsecos (Intrinsics)
+#### Objetos intrínsecos (intrinsics)
 São as implementações padrão das funcionalidades básicas da linguagem:
 
 ```mermaid
@@ -393,7 +393,7 @@ O **Objeto Global** é uma instância fundamental que serve como ponto de acesso
 
 #### Anatomia do Objeto Global
 
-##### Propriedades de Especificação (Intrinsic Properties)
+##### Propriedades de especificação (intrinsic properties)
 São os objetos e funções definidos pelo **padrão ECMAScript** que formam o núcleo da linguagem:
 
 ```javascript
@@ -411,7 +411,7 @@ globalThis.SyntaxError // Construtor de erros
 - Não podem ser deletadas ou reconfiguradas
 - São idênticas em conceito entre ambientes (mas implementações podem variar)
 
-##### Propriedades do Host (Host-Defined Properties)
+##### Propriedades do host (Host-Defined Properties)
 Funcionalidades específicas do **ambiente de execução**:
 
 ```javascript
@@ -435,7 +435,7 @@ globalThis.require      // Sistema de módulos
 - Normalmente são somente-leitura
 - Refletem capacidades específicas da plataforma
 
-##### Propriedades do Usuário (User-Defined Properties)
+##### Propriedades do usuário (User-Defined Properties)
 Variáveis e funções adicionadas por **desenvolvedores**:
 
 **Adição explícita** (recomendada):
@@ -453,7 +453,7 @@ function fetchData() {
 }
 ```
 
-**Adição implícita** (através de declarações globais):
+**Adição implícita** (Através de declarações globais):
 ```javascript
 // Variável 'var' torna-se propriedade
 var globalCounter = 0; 
@@ -470,7 +470,7 @@ globalVariable = 10; // Cria propriedade no objeto global!
 console.log(globalThis.globalVariable); // 10
 ```
 
-#### Mecanismos de Adição: Explicação Técnica
+#### Mecanismos de adição: Explicação técnica
 
 ```mermaid
 flowchart TB
@@ -486,7 +486,7 @@ flowchart TB
     M -->|Universal| GT[globalThis.propriedade]
 ```
 
-#### Tabela Comparativa de Comportamento
+#### Tabela comparativa de comportamento
 
 | Tipo de Declaração | Torna-se Propriedade | Escopo        | Hoisting | Pode ser Deletada? |
 |--------------------|----------------------|---------------|----------|-------------------|
@@ -495,7 +495,7 @@ flowchart TB
 | **let/const**      | Não                  | Bloco         | Parcial  | -                 |
 | **Atribuição direta** | Sim               | Global        | Não      | Sim               |
 
-### Ambientes Léxico e de Variáveis: Os Dois Pilares da Execução
+### Ambientes léxico e de variáveis: Os dois pilares da execução
 
 Todo contexto de execução em JavaScript possui **dois componentes ambientais** que trabalham em conjunto para gerenciar variáveis e declarações:
 
@@ -508,7 +508,7 @@ graph TD
     LE -->|Pode divergir| NovoLE[Novo Environment Record]
 ```
 
-### LexicalEnvironment: O Ambiente Dinâmico
+### LexicalEnvironment: O Ambiente dinâmico
 
 O **LexicalEnvironment** é o componente que:
 
@@ -516,7 +516,7 @@ O **LexicalEnvironment** é o componente que:
 2. **Gerencia** declarações com escopo léxico preciso
 3. **Muda dinamicamente** durante a execução
 
-##### Conteúdo e Comportamento
+##### Conteúdo e comportamento
 | Tipo de Declaração      | Comportamento                   | Exemplo                  |
 |-------------------------|--------------------------------|--------------------------|
 | **`let`**               | Escopo de bloco, sujeito a TDZ  | `let x = 10;`           |
@@ -554,14 +554,14 @@ O **LexicalEnvironment** é o componente que:
   console.log(x); // "global"
   ```
 
-### VariableEnvironment: O Ambiente Estático
+### VariableEnvironment: O Ambiente estático
 
 O **VariableEnvironment** é o componente que:
 1. **Aponta permanentemente** para o Environment Record inicial
 2. **Gerencia** declarações tradicionais com hoisting
 3. **Permanece imutável** durante toda a execução
 
-#### Conteúdo e Comportamento
+#### Conteúdo e comportamento
 | Tipo de Declaração      | Comportamento                   | Exemplo                  |
 |-------------------------|--------------------------------|--------------------------|
 | **`var`**               | Escopo de função/global        | `var y = 20;`           |
@@ -593,9 +593,9 @@ O **VariableEnvironment** é o componente que:
   var d = 30;
   ```
 
-### Relação Entre LexicalEnvironment e VariableEnvironment
+### Relação entre LexicalEnvironment e VariableEnvironment
 
-### Fase de Criação do Contexto
+### Fase de criação do contexto
 ```mermaid
 sequenceDiagram
     participant EC as Contexto de Execução
@@ -607,7 +607,7 @@ sequenceDiagram
     Note over LE,VE: Ambos idênticos inicialmente
 ```
 
-### Durante a Execução
+### Durante a execução
 ```mermaid
 sequenceDiagram
     participant C as Código
@@ -622,7 +622,7 @@ sequenceDiagram
     C->>LE: Restaura Environment Record anterior
 ```
 
-### Casos Especiais e Comportamentos Críticos
+### Casos especiais e comportamentos críticos
 
 ### 1. Blocos `try/catch`
 ```javascript
@@ -666,7 +666,7 @@ console.log(declarada()); // "bloco" (hoisting do VariableEnvironment)
 console.log(expressada); // ReferenceError (let tem escopo de bloco)
 ```
 
-### Tabela Comparativa: LexicalEnvironment vs VariableEnvironment
+### Tabela comparativa: LexicalEnvironment vs VariableEnvironment
 
 | Característica          | LexicalEnvironment                          | VariableEnvironment                 |
 |-------------------------|---------------------------------------------|-------------------------------------|
@@ -676,3 +676,13 @@ console.log(expressada); // ReferenceError (let tem escopo de bloco)
 | **Hoisting**            | Parcial (declarado mas não inicializado)    | Completo (inicializado como `undefined`) |
 | **Tipos de Declarações**| `let`, `const`, classes, parâmetros, imports | `var`, declarações `function`      |
 | **Exemplo Crítico**     | `catch(e)`, `for(let...)`                   | `var` em blocos, funções declaradas |
+
+
+## Referências utilizadas
+
+- [ECMAScript® 2024 Language Specification - Environment Records](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-environment-records)  
+- [JavaScript Visualized - Execution Contexts](https://www.youtube.com/watch?v=zdGfo6I1yrA)  
+- [Como o código JavaScript é executado](https://www.youtube.com/watch?v=lnG5FgcNrYU)  
+- [#04 - Aprenda e Domine o JavaScript: Contexto de Execução e Ambiente Léxico](https://www.youtube.com/watch?v=k8SAA979zAk)  
+- [Understanding JavaScript Execution Context like never before](https://blog.greenroots.info/understanding-javascript-execution-context-like-never-before)
+- [MDN Web Docs - JavaScript execution model](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model)

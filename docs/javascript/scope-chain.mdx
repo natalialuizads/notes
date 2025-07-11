@@ -6,7 +6,7 @@ sidebar_position: 2
 
 A **scope chain** (cadeia de escopo) é um mecanismo fundamental em JavaScript que determina como as variáveis e funções são acessadas em diferentes níveis de escopo. Ela é uma **estrutura hierárquica** que conecta todos os escopos aninhados, permitindo que funções internas acessem variáveis de funções externas e do escopo global.
 
-### Princípios-chave:
+#### Princípios-chave:
 - **Escopo léxico**: O escopo é definido pela posição no código fonte
 - **Encadeamento**: Escopos são ligados em uma cadeia hierárquica
 - **Direção de busca**: Do escopo mais interno para o mais externo
@@ -82,7 +82,7 @@ O **escopo de bloco** refere-se à visibilidade de uma variável limitada ao blo
 - **Não se aplica a**: `var` (possui escopo de função ou global)
 - **Blocos comuns**: `if`, `for`, `while`, `switch`, blocos vazios `{}`
 
-### Exemplo Básico
+### Exemplo básico
 ```javascript
 // Exemplo com var (não tem escopo de bloco)
 if (true) {
@@ -110,7 +110,7 @@ for (let j = 0; j < 3; j++) {
 }
 ```
 
-### Blocos Independentes
+### Blocos independentes
 Você pode criar blocos arbitrários para isolar variáveis:
 ```javascript
 // Bloco 1
@@ -128,12 +128,12 @@ Você pode criar blocos arbitrários para isolar variáveis:
 console.log(temp); // ReferenceError: temp is not defined
 ```
 
-## Shadowing (Sombreamento)
+## Shadowing (sombreamento)
 
 ### Definição
 **Shadowing** ocorre quando uma variável declarada em um escopo interno tem o mesmo nome de uma variável em um escopo externo, efetivamente "escondendo" a variável externa dentro do escopo interno.
 
-### Exemplo Simples
+### Exemplo simples
 ```javascript
 const mensagem = "Global";
 
@@ -151,7 +151,7 @@ console.log(mensagem); // "Global"
 - A variável externa não é alterada, apenas fica inacessível no escopo interno
 - É permitido, mas pode causar confusão se usado indiscriminadamente
 
-### Shadowing em Diferentes Contextos
+### Shadowing em diferentes contextos
 ```javascript
 let valor = "nível 0";
 
@@ -170,7 +170,7 @@ if (true) {
 console.log(valor); // "nível 0"
 ```
 
-### Shadowing com Parâmetros de Função
+### Shadowing com parâmetros de função
 ```javascript
 const valor = 100;
 
@@ -182,9 +182,9 @@ processa(5); // 10
 console.log(valor); // 100 (global inalterada)
 ```
 
-### Armadilhas e Cuidados
+### Armadilhas e cuidados
 
-#### 1. Shadowing Acidental
+#### 1. Shadowing acidental
 ```javascript
 const usuario = { id: 1, nome: "João" };
 
@@ -198,7 +198,7 @@ atualizaUsuario();
 console.log(usuario); // { id: 1, nome: "João" } (não atualizou o global)
 ```
 
-#### 2. Impossibilidade de Redeclaração no Mesmo Escopo
+#### 2. Impossibilidade de redeclaração no mesmo escopo
 ```javascript
 let contador = 0;
 
@@ -225,7 +225,7 @@ console.log(Math.PI); // 3.141592653589793 (global ainda intacta)
 
 ## Direção da Scope Chain 
 
-### A Direção Correta: De Baixo para Cima
+### A Direção correta: De baixo para cima
 
 #### Princípio Fundamental:
 - **Busca ascendente**: Quando uma variável é referenciada, o JavaScript sempre começa a busca **no escopo atual** e sobe para os escopos pais até encontrar a variável
@@ -236,7 +236,7 @@ console.log(Math.PI); // 3.141592653589793 (global ainda intacta)
 2. **Privacidade**: Variáveis locais não devem ser expostas a escopos superiores
 3. **Eficiência**: Buscar do escopo mais específico para o mais geral é mais rápido
 
-### Funcionamento Prático
+### Funcionamento prático
 
 Exemplo de Código:
 ```javascript
@@ -264,16 +264,16 @@ function outer() { // outer Environment
 outer();
 ```
 
-### Passo a passo da busca por `outerVar`:
+#### Passo a passo da busca por `outerVar`:
 1. O motor JavaScript começa no **escopo de `inner()`**
 2. Verifica se `outerVar` existe no Environment Record local → ❌ não encontrado
 3. Segue a referência `[[OuterEnv]]` para o escopo de `outer()`
 4. Encontra `outerVar` no Environment Record de `outer()` → ✅
 5. Usa o valor "Outer"
 
-### Consequências Importantes
+### Consequências importantes
 
-#### 1. Shadowing Funciona Graças a Esta Direção:
+#### 1. Shadowing funciona graças a esta direção:
 ```javascript
 const x = "Global";
 
@@ -403,3 +403,10 @@ graph BT
     O2 --> |OuterEnv| G
     G --> |OuterEnv| null
 ```
+
+## Referências Utilizadas
+
+- [ECMAScript® 2024 Language Specification - Environment Records](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-environment-records)  
+- [MDN Web Docs - Escopo (Scope)](https://developer.mozilla.org/en-US/docs/Glossary/Scope)  
+- [JavaScript Info - Escopo de Bloco e Escopo Léxico](https://javascript.info/closure)  
+- [\#08 - Aprenda de vez o que é Scope Chain](https://www.youtube.com/watch?v=giUXxCHDiww)  
